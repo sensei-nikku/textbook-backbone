@@ -1,0 +1,48 @@
+<!-- BOOK SHELL. A copy of lesson-shell.html plus a navigation placeholder.
+     Separate file because the shell is shared with the day pages, and the
+     book needs navigation the day pages must not inherit. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>{{TITLE}}</title>
+<style>
+{{STYLES}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+
+{{NAV}}
+
+{{BOOKNAV}}
+
+<header class="book">
+  <p class="eyebrow">{{EYEBROW}}</p>
+  <h1>{{H1}}</h1>
+  <p class="sub">{{SUBTITLE}}</p>
+</header>
+
+<main id="main">
+
+<p class="standards">{{STANDARDS}}</p>
+
+{{BODY}}
+
+</main>
+
+<footer class="book">
+  <h2>Sources</h2>
+  <ul>
+{{SOURCES}}
+  </ul>
+  <p style="margin-top:.8rem">{{FOOTER_LINE}}</p>
+</footer>
+
+</div>
+{{SCRIPTS}}
+</body>
+</html>

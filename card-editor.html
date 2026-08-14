@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Card Editor — TEC Papago</title>
+<style>
+:root{
+  --ink:#1a2332; --muted:#5c6672; --line:#e2e5ea; --rule:#c9ced6;
+  --accent:#1b6b93; --accent-soft:#eaf2f6; --page:#fbfbf7;
+  --warn:#a26200; --warn-soft:#fff8ee; --ok:#2a784f; --ok-soft:#e6f1ec;
+  --bad:#b0453a; --bad-soft:#f9ecea;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);line-height:1.5;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px}
+header.top{background:#fff;border-bottom:1px solid var(--line);padding:.7rem 1.1rem;
+  display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+header.top h1{font-size:1.05rem;margin:0}
+header.top .eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin:0}
+header.top .spacer{margin-left:auto}
+.wrap{display:grid;gap:0;grid-template-columns:1fr;max-width:1500px;margin:0 auto}
+@media(min-width:64rem){.wrap{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.pane{padding:1.1rem;min-width:0}
+.pane+.pane{border-top:1px solid var(--line)}
+@media(min-width:64rem){.pane+.pane{border-top:0;border-left:1px solid var(--line);
+  height:calc(100vh - 3.2rem);overflow:auto;position:sticky;top:3.2rem}}
+h2.sec{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  font-weight:700;margin:0 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid var(--line)}
+label{display:block;font-size:.8rem;font-weight:600;margin:.75rem 0 .2rem}
+label .hint{font-weight:400;color:var(--muted);font-size:.76rem}
+input,select,textarea{width:100%;font:inherit;font-size:.92rem;padding:.42rem .55rem;
+  border:1px solid var(--rule);border-radius:6px;background:#fff;color:var(--ink)}
+textarea{font-family:ui-monospace,Menlo,monospace;font-size:.86rem;resize:vertical;min-height:3.4rem}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent)}
+.row2{display:grid;gap:.6rem;grid-template-columns:1fr 1fr}
+.row3{display:grid;gap:.6rem;grid-template-columns:1fr 1fr 1fr}
+button{font:inherit;font-size:.85rem;font-weight:600;padding:.42rem .8rem;border-radius:6px;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button.ghost{background:#fff;color:var(--accent)}
+button.small{font-size:.76rem;padding:.25rem .5rem}
+button:disabled{opacity:.45;cursor:default}
+.btnrow{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.9rem}
+.ents{display:flex;gap:.3rem;flex-wrap:wrap;margin:.3rem 0 0}
+.ents button{background:#fff;color:var(--ink);border-color:var(--line);font-size:.8rem;
+  padding:.2rem .45rem;font-weight:400;font-family:ui-monospace,Menlo,monospace}
+.ents button:hover{border-color:var(--accent);background:var(--accent-soft)}
+.msg{border-radius:6px;padding:.5rem .65rem;margin:.35rem 0;font-size:.84rem}
+.msg.err{background:var(--bad-soft);border:1px solid var(--bad);color:#7d2f27}
+.msg.warn{background:var(--warn-soft);border:1px solid var(--warn);color:#7a4a00}
+.msg.ok{background:var(--ok-soft);border:1px solid var(--ok);color:var(--ok)}
+.slotinfo{background:var(--accent-soft);border:1px solid #cfe0ea;border-radius:6px;
+  padding:.5rem .65rem;font-size:.82rem;margin:.5rem 0}
+.slotinfo b{display:block;margin-bottom:.15rem}
+.preview{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1rem;min-height:8rem}
+.jsonout{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;white-space:pre;overflow:auto;
+  background:#fff;border:1px solid var(--line);border-radius:8px;padding:.7rem;max-height:22rem}
+.pill{display:inline-block;font-size:.72rem;font-weight:700;padding:.1rem .45rem;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent);margin-right:.3rem}
+.pill.count{background:var(--ok-soft);color:var(--ok)}
+.work{border-left:3px solid var(--accent-soft);padding-left:.7rem;margin-top:.4rem}
+.std{display:grid;gap:.4rem;grid-template-columns:2fr 1.4fr auto;align-items:end;margin-bottom:.35rem}
+.libbar{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin-bottom:.7rem}
+.libbar select{max-width:22rem}
+details.help{margin:.5rem 0}
+details.help summary{cursor:pointer;font-size:.8rem;color:var(--accent);font-weight:600}
+details.help div{font-size:.83rem;color:var(--muted);padding:.4rem 0 0}
+/* the preview reuses the real card styles */
+.sw{border:1px solid var(--line);border-radius:8px;padding:.5rem .7rem;margin:.5rem 0;background:#fcfcfa}
+.sw-part+.sw-part{margin-top:.5rem}
+.sw-h{font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;
+  color:var(--muted);margin:0 0 .2rem}
+.math{font-family:ui-monospace,Menlo,monospace;font-size:.9rem;white-space:pre-wrap;margin:.2rem 0}
+.inline{font-family:ui-monospace,Menlo,monospace;background:#f2f4f7;border-radius:4px;padding:.05rem .25rem}
+.rulebox{border:2px solid var(--accent);border-radius:8px;padding:.7rem .85rem;background:var(--accent-soft)}
+.rulebox .label{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;
+  color:var(--accent);margin:0 0 .3rem}
+.trap{border:2px solid var(--warn);background:var(--warn-soft);border-radius:8px;padding:.7rem .85rem}
+.trap .label{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;
+  color:#7a4a00;margin:0 0 .3rem}
+.vignette{border-left:4px solid var(--accent);background:#fff;padding:.7rem .9rem;border-radius:0 8px 8px 0}
+.given{font-family:ui-monospace,Menlo,monospace;font-size:.92rem}
+details.fold{border:1px solid var(--line);border-left:3px solid var(--rule);border-radius:0 8px 8px 0;
+  margin:.5rem 0;background:#fff}
+details.fold>summary{cursor:pointer;list-style:none;font-size:.7rem;letter-spacing:.08em;
+  text-transform:uppercase;font-weight:700;color:var(--muted);padding:.42rem .7rem}
+details.fold>div{padding:0 .7rem .5rem}
+details.why{display:inline-block;margin:.2rem 0}
+details.why>summary{cursor:pointer;font-size:.76rem;font-weight:600;color:var(--accent);
+  background:var(--accent-soft);border:1px solid #cfe0ea;border-radius:999px;padding:.1rem .55rem;list-style:none}
+.why-body{border-left:3px solid var(--accent-soft);padding:.4rem 0 .1rem .7rem;margin:.35rem 0;font-size:.88rem}
+table{border-collapse:collapse;width:100%;font-size:.88rem;margin:.4rem 0}
+caption{text-align:left;font-size:.8rem;color:var(--muted);padding-bottom:.3rem}
+th,td{border:1px solid var(--line);padding:.35rem .5rem;text-align:left}
+th{background:#f7f8fa;font-size:.78rem}
+ol.checks{padding-left:1.3rem}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <p class="eyebrow">TEC Papago · Card Editor</p>
+    <h1 id="libcount">loading…</h1>
+  </div>
+  <div class="spacer"></div>
+  <button class="ghost small" id="btn-new">New card</button>
+  <button class="ghost small" id="btn-export-card">Copy this card</button>
+  <button id="btn-export-lib">Download library.js</button>
+</header>
+
+<div class="wrap">
+
+  <!-- ─────────── EDITOR ─────────── -->
+  <section class="pane">
+
+    <h2 class="sec">Library</h2>
+    <div class="libbar">
+      <input id="filter" placeholder="filter…" style="max-width:11rem" autocomplete="off">
+      <select id="pick-card"><option value="">— new card —</option></select>
+      <button class="ghost small" id="btn-dupe">Duplicate</button>
+      <span id="dirty" style="font-size:.8rem;color:var(--warn);font-weight:600"></span>
+    </div>
+
+    <h2 class="sec">Identity</h2>
+    <label>Card id
+      <span class="hint">— lowercase words joined by hyphens. A name, not a place.</span></label>
+    <input id="f-id" placeholder="reflect-over-y-equals-x" autocomplete="off">
+
+    <div class="row2">
+      <div>
+        <label>Type</label>
+        <select id="f-type"></select>
+      </div>
+      <div>
+        <label>Slot <span class="hint">— where it belongs</span></label>
+        <select id="f-slot"></select>
+      </div>
+    </div>
+    <div id="slotinfo"></div>
+
+    <div class="row3">
+      <div>
+        <label>Complexity</label>
+        <select id="f-complexity">
+          <option value="">—</option>
+          <option>essential</option><option>developing</option><option>complex</option>
+        </select>
+      </div>
+      <div>
+        <label>Topic <span class="hint">— a facet</span></label>
+        <input id="f-topic" list="topics" placeholder="rotation">
+        <datalist id="topics"></datalist>
+      </div>
+      <div>
+        <label>Scope</label>
+        <select id="f-scope">
+          <option value="">library</option>
+          <option value="textbook-only">textbook-only</option>
+          <option value="lesson-only">lesson-only</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Title <span class="hint" id="title-hint"></span></label>
+    <input id="f-title" placeholder="a whole figure">
+
+    <h2 class="sec" style="margin-top:1.2rem">Standards</h2>
+    <div id="stds"></div>
+    <button class="ghost small" id="btn-add-std">Add standard</button>
+
+    <h2 class="sec" style="margin-top:1.2rem">Content</h2>
+    <div class="ents" id="entbar"></div>
+    <div id="fields"></div>
+
+    <h2 class="sec" style="margin-top:1.2rem">Requires
+      <span class="hint" style="text-transform:none;letter-spacing:0">— cards this cannot be read without</span></h2>
+    <input id="f-requires" placeholder="card-id, another-card-id" autocomplete="off">
+
+    <h2 class="sec" style="margin-top:1.4rem">Import from an LLM</h2>
+    <p style="font-size:.83rem;color:var(--muted);margin:0 0 .5rem">
+      Paste one card, several cards, or a whole <code>content-package.json</code>.
+      Every card is validated before anything is merged.</p>
+    <div class="btnrow" style="margin:0 0 .5rem">
+      <button class="ghost small" id="btn-prompt">Copy the prompt for your LLM</button>
+      <button class="ghost small" id="btn-paste-file">Load a .json file</button>
+      <input type="file" id="file-in" accept=".json,application/json" style="display:none">
+    </div>
+    <textarea id="import-box" rows="5" placeholder='{ "reflect-over-y-axis": { "type": "practice", ... } }'></textarea>
+    <div class="btnrow">
+      <button class="ghost" id="btn-check-import">Check</button>
+      <button id="btn-merge" disabled>Merge valid cards</button>
+    </div>
+    <div id="import-report"></div>
+
+    <div class="btnrow">
+      <button id="btn-save">Save to library</button>
+      <button class="ghost" id="btn-revert">Revert</button>
+      <button class="ghost" id="btn-delete">Delete</button>
+    </div>
+  </section>
+
+  <!-- ─────────── VALIDATION + PREVIEW ─────────── -->
+  <section class="pane">
+    <h2 class="sec">Validation</h2>
+    <div id="validation"></div>
+
+    <h2 class="sec" style="margin-top:1.1rem">Preview</h2>
+    <div class="preview" id="preview"></div>
+
+    <h2 class="sec" style="margin-top:1.1rem">JSON</h2>
+    <div class="jsonout" id="jsonout"></div>
+  </section>
+
+</div>
+
+<script src="library.js"></script>
+<script src="tools/taxonomy.js"></script>
+<script src="tools/cards.js"></script>
+<script>
+/* ===================================================================
+   CARD EDITOR
+
+   Runs entirely in the browser. It loads the SAME engines the build
+   uses — taxonomy.js for the rules, cards.js for the preview — so a
+   card that looks right here renders identically in the book.
+
+   Nothing persists. Edits live in memory; "Download library.js"
+   writes the file you upload. That is deliberate: no server, no
+   database, no deploy step, and no way for this page to corrupt
+   anything you have not chosen to replace.
+   =================================================================== */
+'use strict';
+
+const T = window.TAXONOMY;
+const LIB = Object.assign({}, window.LIBRARY);   // working copy
+let currentId = null;      // the library id being edited, or null for new
+let dirty = false;
+
+/* ---- what fields each type carries. Mirrors contract.json. ---- */
+const FIELDS = {
+  vignette:   {req:['paragraphs'], opt:['why'], kinds:{paragraphs:'lines'}},
+  prose:      {req:[], opt:['paragraphs','body','className','why'], kinds:{paragraphs:'lines'},
+               note:'Supply paragraphs OR body.'},
+  refresher:  {req:[], opt:['math','html','note','why'], kinds:{math:'pre'}},
+  rule:       {req:['statement'], opt:['notes','reason','why'], kinds:{statement:'pre'}},
+  example:    {req:['question','work'], opt:['notice','why'],
+               note:'Title carries ONLY the description. The engine writes "Example N — ".'},
+  practice:   {req:['question','answer'], opt:['work']},
+  trap:       {req:['body'], opt:[]},
+  table:      {req:['caption','headers','rows'], opt:['className','firstCellClass'],
+               kinds:{headers:'csv', rows:'grid'}},
+  figure:     {req:['svg'], opt:['caption'], kinds:{svg:'pre'}},
+  math:       {req:['math'], opt:['intro','why'], kinds:{math:'pre', intro:'lines'}},
+  interactive:{req:['html'], opt:[], kinds:{html:'pre'}},
+  handoff:    {req:['body','href','linkLabel'], opt:[]},
+  note:       {req:['body'], opt:['className']},
+};
+const TITLE_REQUIRED = ['refresher','rule','example','trap','handoff'];
+const COMPLEXITY_TYPES = ['example','practice'];
+const ENTITIES = [['&minus;','−'],['&#10216;','⟨'],['&#10217;','⟩'],['&#8242;','′'],
+                  ['&deg;','°'],['&rarr;','→'],['&#10003;','✓'],['&frac12;','½']];
+const BANNED = ['easy','hard','subtract','divide','obvious','simply','clearly'];
+const LITERALS = [['−','&minus;'],['⟨','&#10216;'],['⟩','&#10217;'],
+                  ['′','&#8242;'],['°','&deg;'],['→','&rarr;']];
+const POSITIONAL = [/\babove\b/i,/\bbelow\b/i,/\bearlier\b/i,/\bSection \d/,/\bProblem \d/,/\bDay\s*\d/];
+
+const $ = s => document.querySelector(s);
+const el = (t,a,h) => { const e=document.createElement(t); Object.assign(e,a||{});
+  if(h!==undefined) e.innerHTML=h; return e; };
+const esc = s => String(s==null?'':s).replace(/&(?![a-zA-Z#][a-zA-Z0-9]*;)/g,'&amp;').replace(/</g,'&lt;');
+
+/* ---------------- populate the pickers ---------------- */
+function initPickers(){
+  const ts = $('#f-type');
+  Object.keys(FIELDS).sort().forEach(t => ts.appendChild(el('option',{value:t,textContent:t})));
+  refreshLibPicker();
+  const topics = [...new Set(Object.values(LIB).map(c=>c.topic).filter(Boolean))].sort();
+  topics.forEach(t => $('#topics').appendChild(el('option',{value:t})));
+  ENTITIES.forEach(([ent,glyph]) => {
+    const b = el('button',{type:'button',title:ent}, `${glyph}`);
+    b.onclick = () => insertAtCursor(ent);
+    $('#entbar').appendChild(b);
+  });
+}
+function refreshLibPicker(){
+  const sel = $('#pick-card'), keep = sel.value;
+  sel.innerHTML = '<option value="">— new card —</option>';
+  const q = ($('#filter')?.value || '').toLowerCase().trim();
+  const match = id => !q || id.toLowerCase().includes(q)
+    || (LIB[id].type||'').includes(q) || (LIB[id].topic||'').includes(q)
+    || (LIB[id].slot||'').includes(q)
+    || (LIB[id].standards||[]).some(s => s.code.toLowerCase().includes(q));
+  const ids = Object.keys(LIB).sort().filter(match);
+  ids.forEach(id => sel.appendChild(
+    el('option',{value:id,textContent:`${id}  ·  ${LIB[id].type}`})));
+  sel.value = keep;
+  const total = Object.keys(LIB).length;
+  $('#libcount').textContent = ids.length === total
+    ? `${total} cards` : `${ids.length} of ${total} cards`;
+}
+
+let lastFocused = null;
+document.addEventListener('focusin', e => {
+  if (e.target.matches('input,textarea')) lastFocused = e.target;
+});
+function insertAtCursor(text){
+  const t = lastFocused;
+  if (!t) return;
+  const s = t.selectionStart ?? t.value.length, e = t.selectionEnd ?? s;
+  t.value = t.value.slice(0,s) + text + t.value.slice(e);
+  t.selectionStart = t.selectionEnd = s + text.length;
+  t.focus(); onChange();
+}
+
+/* ---------------- slots that accept the chosen type ---------------- */
+function refreshSlots(){
+  const type = $('#f-type').value, sel = $('#f-slot'), keep = sel.value;
+  sel.innerHTML = '';
+  const opts = [];
+  T.order.forEach(p => T.slotsFor(p).forEach(s => {
+    if (T.spec(p,s).types.includes(type)) opts.push([p,s]);
+  }));
+  if (!opts.length) sel.appendChild(el('option',{value:'',textContent:'— no slot accepts this type —'}));
+  opts.forEach(([p,s]) => sel.appendChild(el('option',{value:s,textContent:`${p} / ${s}`})));
+  if (opts.some(([,s])=>s===keep)) sel.value = keep;
+  showSlotInfo();
+}
+function showSlotInfo(){
+  const slot = $('#f-slot').value;
+  let phase=null, spec=null;
+  T.order.forEach(p => { if (T.slotsFor(p).includes(slot)) { phase=p; spec=T.spec(p,slot); } });
+  $('#slotinfo').innerHTML = spec
+    ? `<div class="slotinfo"><b>${esc(spec.label)}</b>${esc(spec.purpose)}`
+      + (spec.notes ? `<br><em>${esc(spec.notes)}</em>` : '')
+      + (spec.hourglass ? `<br><span class="pill">${spec.hourglass}</span>` : '')
+      + (spec.min ? `<span class="pill">min ${spec.min}</span>` : '')
+      + (spec.max ? `<span class="pill">max ${spec.max}</span>` : '')
+      + '</div>'
+    : '';
+}
+
+/* ---------------- the data fields for a type ---------------- */
+function buildFields(data){
+  data = data || {};
+  const type = $('#f-type').value, spec = FIELDS[type] || {req:[],opt:[]};
+  const host = $('#fields'); host.innerHTML = '';
+  if (spec.note) host.appendChild(el('div',{className:'msg warn'}, esc(spec.note)));
+
+  const add = (name, required) => {
+    const kind = (spec.kinds||{})[name];
+    const lab = el('label',{},`${name}${required?'':' <span class="hint">— optional</span>'}`);
+    host.appendChild(lab);
+
+    if (name === 'work') { host.appendChild(workEditor(data.work)); return; }
+    if (name === 'why')  { host.appendChild(whyEditor(data.why)); return; }
+
+    const v = data[name];
+    let val = '';
+    if (kind === 'lines')      val = Array.isArray(v) ? v.join('\n\n') : (v||'');
+    else if (kind === 'csv')   val = Array.isArray(v) ? v.join(' | ') : (v||'');
+    else if (kind === 'grid')  val = Array.isArray(v) ? v.map(r=>r.join(' | ')).join('\n') : (v||'');
+    else                       val = v==null ? '' : v;
+
+    const big = ['pre','lines','grid'].includes(kind) || String(val).length > 60;
+    const t = el(big?'textarea':'input',{value:val});
+    t.dataset.field = name; t.dataset.kind = kind || 'text';
+    if (kind==='csv')  t.placeholder = 'Term | What it means';
+    if (kind==='grid') t.placeholder = 'one row per line, cells separated by |';
+    if (kind==='lines')t.placeholder = 'one paragraph per blank line';
+    if (big) t.rows = kind==='grid' ? 6 : 4;
+    host.appendChild(t);
+  };
+  spec.req.forEach(f => add(f, true));
+  spec.opt.forEach(f => add(f, false));
+}
+function workEditor(work){
+  work = work || {};
+  const box = el('div',{className:'work'});
+  ['givens','tools','primitives','computation'].forEach(k => {
+    box.appendChild(el('label',{},k));
+    const t = el('textarea',{value:work[k]||'',rows:3});
+    t.dataset.workField = k;
+    box.appendChild(t);
+  });
+  return box;
+}
+function whyEditor(why){
+  why = why || {};
+  const box = el('div',{className:'work'});
+  box.appendChild(el('label',{},'why · label <span class="hint">— the button text</span>'));
+  const a = el('input',{value:why.label||''}); a.dataset.whyField='label'; box.appendChild(a);
+  box.appendChild(el('label',{},'why · body <span class="hint">— HTML, shown when opened</span>'));
+  const b = el('textarea',{value:why.body||'',rows:4}); b.dataset.whyField='body'; box.appendChild(b);
+  return box;
+}
+
+/* ---------------- read the form into a card ---------------- */
+function readCard(){
+  const type = $('#f-type').value;
+  const spec = FIELDS[type] || {req:[],opt:[]};
+  const c = { type, slot: $('#f-slot').value };
+  const t = $('#f-title').value.trim();          if (t) c.title = t;
+  const cx = $('#f-complexity').value;           if (cx) c.complexity = cx;
+  const tp = $('#f-topic').value.trim();         if (tp) c.topic = tp;
+  const sc = $('#f-scope').value;                if (sc) c.scope = sc;
+
+  const stds = [...document.querySelectorAll('#stds .std')].map(r => ({
+    code: r.querySelector('.std-code').value.trim(),
+    engagement: r.querySelector('.std-eng').value
+  })).filter(s => s.code);
+  if (stds.length) c.standards = stds;
+
+  const req = $('#f-requires').value.split(',').map(s=>s.trim()).filter(Boolean);
+  if (req.length) c.requires = req;
+
+  const data = {};
+  document.querySelectorAll('#fields [data-field]').forEach(inp => {
+    const v = inp.value.trim(); if (!v) return;
+    const k = inp.dataset.kind;
+    if (k === 'lines')      data[inp.dataset.field] = v.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
+    else if (k === 'csv')   data[inp.dataset.field] = v.split('|').map(s=>s.trim());
+    else if (k === 'grid')  data[inp.dataset.field] = v.split('\n').filter(l=>l.trim())
+                                                        .map(l => l.split('|').map(s=>s.trim()));
+    else                    data[inp.dataset.field] = v;
+  });
+  const work = {};
+  document.querySelectorAll('#fields [data-work-field]').forEach(i => {
+    if (i.value.trim()) work[i.dataset.workField] = i.value.trim();
+  });
+  if (Object.keys(work).length) data.work = work;
+  const why = {};
+  document.querySelectorAll('#fields [data-why-field]').forEach(i => {
+    if (i.value.trim()) why[i.dataset.whyField] = i.value.trim();
+  });
+  if (why.label || why.body) data.why = why;
+
+  c.data = data;
+  return c;
+}
+
+/* ---------------- validation — the same rules the build applies ---------------- */
+function validate(id, c){
+  const errs = [], warns = [];
+  if (!id) errs.push('No card id.');
+  else if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id))
+    warns.push('Id should be lowercase words joined by hyphens.');
+  if (id && id !== currentId && LIB[id]) warns.push(`"${id}" already exists — saving will replace it.`);
+
+  if (!c.slot) errs.push('No slot.');
+  else {
+    let spec=null, phase=null;
+    T.order.forEach(p => { if (T.slotsFor(p).includes(c.slot)) { phase=p; spec=T.spec(p,c.slot); }});
+    if (spec && !spec.types.includes(c.type))
+      errs.push(`Type "${c.type}" is not allowed in ${phase}/${c.slot}.`);
+  }
+
+  const spec = FIELDS[c.type] || {req:[]};
+  spec.req.forEach(f => {
+    const v = c.data[f];
+    if (v==null || v==='' || (Array.isArray(v)&&!v.length) || (typeof v==='object'&&!Array.isArray(v)&&!Object.keys(v).length))
+      errs.push(`data.${f} is required for type "${c.type}".`);
+  });
+  if (TITLE_REQUIRED.includes(c.type) && !c.title) errs.push(`Type "${c.type}" needs a title.`);
+  if (/^Example\s*\d?\b/.test(c.title||''))
+    errs.push('Title carries the word "Example" — supply only the description. The engine writes the rest.');
+  if (COMPLEXITY_TYPES.includes(c.type) && !c.complexity)
+    errs.push(`A ${c.type} needs a complexity.`);
+
+  const blob = JSON.stringify(c);
+  const text = blob.replace(/<[^>]+>/g,' ').replace(/&[a-zA-Z#0-9]+;/g,' ');
+  BANNED.forEach(w => { if (new RegExp(`\\b${w}\\b`,'i').test(text)) errs.push(`Banned word "${w}".`); });
+  POSITIONAL.forEach(re => { const m = text.match(re);
+    if (m) errs.push(`Positional reference "${m[0]}" — use {{card:id}} instead.`); });
+  LITERALS.forEach(([lit,ent]) => { if (blob.includes(lit)) errs.push(`Literal "${lit}" — use ${ent}.`); });
+
+  (c.standards||[]).forEach(s => {
+    if (!['warmup','lesson','exercise','assessment'].includes(s.engagement))
+      errs.push(`Standard ${s.code}: engagement must be warmup, lesson, exercise or assessment.`);
+  });
+  (c.requires||[]).forEach(r => { if (!LIB[r]) warns.push(`Requires "${r}", which is not in the library.`); });
+  if (!c.standards || !c.standards.length) warns.push('No standards tagged.');
+  if (!c.topic) warns.push('No topic — it is only a search facet, but useful.');
+  return {errs, warns};
+}
+
+/* ---------------- render ---------------- */
+function render(){
+  const id = $('#f-id').value.trim();
+  const c = readCard();
+  const {errs, warns} = validate(id, c);
+
+  $('#validation').innerHTML =
+    (errs.length ? errs.map(e=>`<div class="msg err">✖ ${esc(e)}</div>`).join('') : '')
+    + (warns.map(w=>`<div class="msg warn">⚠ ${esc(w)}</div>`).join(''))
+    + (!errs.length ? `<div class="msg ok">✓ valid${warns.length?` — ${warns.length} warning${warns.length===1?'':'s'}`:''}</div>` : '');
+
+  try {
+    const card = window.Cards.create(Object.assign({id: id||'preview'}, c));
+    $('#preview').innerHTML = card.render({}) || '<p style="color:var(--muted)">nothing to render yet</p>';
+  } catch (e) {
+    $('#preview').innerHTML = `<div class="msg err">cannot render: ${esc(e.message)}</div>`;
+  }
+  $('#jsonout').textContent = JSON.stringify({[id||'card-id']: c}, null, 2);
+  $('#btn-save').disabled = errs.length > 0 || !id;
+  $('#dirty').textContent = dirty ? 'unsaved changes' : '';
+}
+function onChange(){ dirty = true; render(); }
+
+/* ---------------- standards rows ---------------- */
+function addStd(code, eng){
+  const row = el('div',{className:'std'});
+  row.innerHTML =
+    `<div><label style="margin:0">code</label><input class="std-code" value="${esc(code||'')}" placeholder="G-CO.A.5"></div>`
+   +`<div><label style="margin:0">engagement</label><select class="std-eng">`
+   + ['warmup','lesson','exercise','assessment'].map(e=>`<option${e===eng?' selected':''}>${e}</option>`).join('')
+   +`</select></div><button class="ghost small" type="button">×</button>`;
+  row.querySelector('button').onclick = () => { row.remove(); onChange(); };
+  $('#stds').appendChild(row);
+}
+
+/* ---------------- load / save ---------------- */
+function loadCard(id){
+  currentId = id || null;
+  const c = id ? LIB[id] : {type:'practice', slot:'free-practice', data:{}};
+  $('#f-id').value = id || '';
+  $('#f-type').value = c.type || 'practice';
+  refreshSlots();
+  $('#f-slot').value = c.slot || $('#f-slot').value;
+  showSlotInfo();
+  $('#f-title').value = c.title || '';
+  $('#f-complexity').value = c.complexity || '';
+  $('#f-topic').value = c.topic || '';
+  $('#f-scope').value = c.scope || '';
+  $('#f-requires').value = (c.requires||[]).join(', ');
+  $('#stds').innerHTML = '';
+  (c.standards||[]).forEach(s => addStd(s.code, s.engagement));
+  buildFields(c.data);
+  $('#title-hint').textContent = TITLE_REQUIRED.includes(c.type||'practice') ? '— required for this type' : '— optional';
+  dirty = false;
+  render();
+}
+
+$('#f-type').onchange = () => { refreshSlots(); buildFields(readCard().data); 
+  $('#title-hint').textContent = TITLE_REQUIRED.includes($('#f-type').value) ? '— required for this type' : '— optional';
+  onChange(); };
+$('#f-slot').onchange = () => { showSlotInfo(); onChange(); };
+document.addEventListener('input', e => {
+  /* e.target is not always an element — guard before reaching for closest() */
+  const t = e.target;
+  if (t && t.nodeType === 1 && typeof t.closest === 'function' && t.closest('.pane')) onChange();
+});
+$('#pick-card').onchange = e => {
+  if (dirty && !confirm('Discard unsaved changes?')) { e.target.value = currentId||''; return; }
+  loadCard(e.target.value);
+};
+$('#btn-new').onclick = () => {
+  if (dirty && !confirm('Discard unsaved changes?')) return;
+  $('#pick-card').value = ''; loadCard(null);
+};
+$('#btn-dupe').onclick = () => {
+  const c = readCard();
+  currentId = null; $('#pick-card').value = '';
+  $('#f-id').value = ($('#f-id').value || 'card') + '-copy';
+  onChange();
+};
+$('#btn-add-std').onclick = () => { addStd('','exercise'); onChange(); };
+$('#btn-revert').onclick = () => { if (confirm('Revert to the saved version?')) loadCard(currentId); };
+$('#btn-delete').onclick = () => {
+  if (!currentId) return;
+  if (!confirm(`Remove "${currentId}" from the working library?\n\nThis does not touch any file until you download.`)) return;
+  delete LIB[currentId]; refreshLibPicker(); loadCard(null);
+};
+$('#btn-save').onclick = () => {
+  const id = $('#f-id').value.trim(); if (!id) return;
+  if (currentId && currentId !== id) delete LIB[currentId];
+  LIB[id] = readCard();
+  currentId = id; dirty = false;
+  refreshLibPicker(); $('#pick-card').value = id; render();
+};
+$('#btn-export-card').onclick = async () => {
+  const id = $('#f-id').value.trim() || 'card-id';
+  const text = JSON.stringify({[id]: readCard()}, null, 2);
+  try { await navigator.clipboard.writeText(text); alert('Card JSON copied.'); }
+  catch { prompt('Copy this:', text); }
+};
+$('#btn-export-lib').onclick = () => {
+  const body = '/* CONTENT LIBRARY — cards only.\n\n'
+    + '   A card knows what it IS. It does not know which textbook, chapter,\n'
+    + '   lesson or class it appears in. `topic` is a search facet, not a\n'
+    + '   filing instruction. */\nwindow.LIBRARY = '
+    + JSON.stringify(LIB, null, 1) + ';\n';
+  const a = el('a',{href:URL.createObjectURL(new Blob([body],{type:'text/javascript'})),
+                    download:'library.js'});
+  document.body.appendChild(a); a.click(); a.remove();
+};
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue=''; } });
+
+
+/* ---------------- filter ---------------- */
+$('#filter').oninput = () => refreshLibPicker();
+
+/* ---------------- import ---------------- */
+let pending = null;   // {id: card} that passed validation
+
+function normalise(obj){
+  /* Accepts a content-package, a bare card map, or a single card object. */
+  if (obj && obj.cards && typeof obj.cards === 'object') return obj.cards;
+  if (obj && obj.type && obj.data) return {'imported-card': obj};
+  return obj || {};
+}
+
+function checkImport(){
+  const raw = $('#import-box').value.trim();
+  const rep = $('#import-report');
+  pending = null; $('#btn-merge').disabled = true;
+  if (!raw) { rep.innerHTML = ''; return; }
+
+  let obj;
+  try { obj = JSON.parse(raw); }
+  catch (e) {
+    rep.innerHTML = `<div class="msg err">✖ Not valid JSON — ${esc(e.message)}</div>`;
+    return;
+  }
+  const cards = normalise(obj);
+  const ids = Object.keys(cards);
+  if (!ids.length) { rep.innerHTML = '<div class="msg err">✖ No cards found.</div>'; return; }
+
+  const ok = {}, rows = [];
+  ids.forEach(id => {
+    const c = cards[id];
+    if (!c || typeof c !== 'object' || !c.type) {
+      rows.push(`<div class="msg err">✖ <b>${esc(id)}</b> — not a card</div>`); return;
+    }
+    const {errs, warns} = validate(id, Object.assign({data:{}}, c));
+    const replacing = id in LIB;
+    if (errs.length) {
+      rows.push(`<div class="msg err">✖ <b>${esc(id)}</b><br>`
+        + errs.map(e=>'• '+esc(e)).join('<br>') + '</div>');
+    } else {
+      ok[id] = c;
+      rows.push(`<div class="msg ok">✓ <b>${esc(id)}</b>`
+        + (replacing ? ' <span class="pill">replaces an existing card</span>' : '')
+        + (warns.length ? '<br>' + warns.map(w=>'⚠ '+esc(w)).join('<br>') : '') + '</div>');
+    }
+  });
+
+  const nOk = Object.keys(ok).length;
+  rep.innerHTML = `<div class="msg${nOk===ids.length?' ok':' warn'}">`
+    + `<b>${nOk} of ${ids.length} cards can be merged.</b>`
+    + (obj.notes && obj.notes.length ? `<br>Package carries ${obj.notes.length} notes.` : '')
+    + '</div>' + rows.join('');
+  if (nOk) { pending = ok; $('#btn-merge').disabled = false; }
+}
+
+$('#btn-check-import').onclick = checkImport;
+$('#import-box').oninput = () => { $('#btn-merge').disabled = true; };
+
+$('#btn-merge').onclick = () => {
+  if (!pending) return;
+  const ids = Object.keys(pending);
+  const replacing = ids.filter(i => i in LIB);
+  const msg = `Merge ${ids.length} card${ids.length===1?'':'s'} into the working library?`
+    + (replacing.length ? `\n\n${replacing.length} will REPLACE an existing card:\n  ${replacing.join('\n  ')}` : '')
+    + '\n\nNothing is written to a file until you download.';
+  if (!confirm(msg)) return;
+  Object.assign(LIB, pending);
+  refreshLibPicker();
+  $('#import-report').innerHTML =
+    `<div class="msg ok">✓ Merged ${ids.length}. Download library.js to keep them.</div>`;
+  $('#import-box').value = ''; pending = null; $('#btn-merge').disabled = true;
+};
+
+$('#btn-paste-file').onclick = () => $('#file-in').click();
+$('#file-in').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { $('#import-box').value = r.result; checkImport(); };
+  r.readAsText(f);
+};
+
+/* ---------------- the prompt for an LLM ---------------- */
+function buildPrompt(){
+  const types = Object.keys(FIELDS).sort().map(t => {
+    const f = FIELDS[t];
+    const where = [];
+    T.order.forEach(p => T.slotsFor(p).forEach(s => {
+      if (T.spec(p,s).types.includes(t)) where.push(p+'/'+s);
+    }));
+    return `  ${t}\n     required data: ${f.req.join(', ')||'none'}\n`
+         + `     optional data: ${f.opt.join(', ')||'none'}\n`
+         + `     slots: ${where.join(', ')||'none'}`;
+  }).join('\n');
+
+  return `Write geometry cards as JSON for a textbook engine. Return ONLY a JSON object, no prose.
+
+SHAPE
+{
+  "card-id-here": {
+    "type": "...", "slot": "...", "title": "...", "complexity": "...",
+    "topic": "...", "standards": [{"code":"G-CO.A.5","engagement":"exercise"}],
+    "data": { ... }
+  }
+}
+
+CARD TYPES — required and optional data fields, and the slots each may occupy
+${types}
+
+The four-part working object, used by example and practice:
+  "work": { "givens": "...", "tools": "...", "primitives": "...", "computation": "..." }
+
+RULES
+1. Card ids are lowercase words joined by hyphens. A name, not a place:
+   "reflect-over-y-equals-x", never "example-2".
+2. NEVER write "Example 1" into a title. Supply only the description —
+   "a whole figure". The engine writes the word and the number.
+3. No positional references: no above, below, earlier, Section 3, Day 4.
+   To point at another card use {{card:some-card-id}}.
+4. Use HTML entities, not literal characters:
+   &minus; &#10216; &#10217; &#8242; &deg; &rarr; &#10003;
+   A plain hyphen looks right and hashes differently.
+5. Banned words: ${BANNED.join(', ')}.
+   Use essential / developing / complex. Multiplicative inverse language:
+   "multiply by 1/15", never "divide by 15".
+6. complexity is required on example and practice:
+   essential = base case · developing = one added demand · complex = several,
+   or requires choosing the method.
+7. engagement is one of warmup, lesson, exercise, assessment. Tag honestly.
+8. Every answer must be arithmetically correct. Verify before writing.
+9. Terse, but keep the second person. Say "you", not "the student".
+   No padding, no fake enthusiasm, no analogy for decoration.
+
+Write the cards I ask for and return the JSON object only.`;
+}
+
+$('#btn-prompt').onclick = async () => {
+  const text = buildPrompt();
+  try { await navigator.clipboard.writeText(text); alert('Prompt copied. Paste it to your LLM, then paste the JSON it returns into the import box.'); }
+  catch { const w = window.open(); w.document.write('<pre>'+esc(text)+'</pre>'); }
+};
+
+initPickers();
+loadCard(null);
+</script>
+</body>
+</html>

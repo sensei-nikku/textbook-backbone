@@ -1,0 +1,354 @@
+:root{
+    --ink:#1a2332; --page:#fbfbf7; --muted:#5c6672; --line:#e2e5ea; --rule:#c9ced6;
+    --accent:#1b6b93; --accent-soft:#eaf2f6;
+    --warn:#a26200; --warn-soft:#fff8ee;
+    --pre:#1b6b93; --img:#b0453a; --ok:#2a784f;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth; scroll-padding-top:4.2rem}
+  body{
+    margin:0; color:var(--ink); background:var(--page); line-height:1.65;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:1.02rem;
+  }
+  .wrap{max-width:44rem;margin:0 auto;padding:0 1.15rem 5rem}
+
+  /* ---------- navigation ---------- */
+  nav.toc{
+    position:sticky; top:0; z-index:20; background:rgba(255,255,255,.97);
+    backdrop-filter:blur(6px); border-bottom:1px solid var(--line);
+    margin:0 -1.15rem 1.4rem; padding:.5rem 1.15rem;
+  }
+  nav.toc ol{
+    list-style:none; display:flex; gap:.3rem; margin:0; padding:0;
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+  }
+  nav.toc a{
+    display:block; white-space:nowrap; text-decoration:none;
+    font-family:system-ui,sans-serif; font-size:.78rem; color:var(--muted);
+    padding:.3rem .55rem; border-radius:999px; border:1px solid transparent;
+  }
+  nav.toc a:hover{background:var(--accent-soft); color:var(--accent)}
+  nav.toc a.here{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .skip{
+    position:absolute; left:-9999px; background:var(--accent); color:#fff;
+    padding:.5rem .8rem; border-radius:0 0 6px 0; z-index:50;
+  }
+  .skip:focus{left:0; top:0}
+
+  header.book{border-bottom:3px double var(--rule);padding-bottom:.7rem;margin:0 0 1.4rem}
+  .eyebrow{font-family:system-ui,sans-serif;font-size:.72rem;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 .3rem}
+  h1{font-size:1.75rem;margin:0 0 .35rem;line-height:1.2}
+  .sub{font-family:system-ui,sans-serif;font-size:.85rem;color:var(--muted);margin:0}
+  h2{font-family:system-ui,sans-serif;font-size:1.02rem;letter-spacing:.02em;
+    margin:2.2rem 0 .7rem;padding-bottom:.3rem;border-bottom:1px solid var(--line);scroll-margin-top:4rem}
+  h3{font-family:system-ui,sans-serif;font-size:.9rem;margin:1.3rem 0 .4rem}
+  p{margin:0 0 .8rem}
+  .lead{font-size:1.06rem}
+
+  .standards{font-family:system-ui,sans-serif;font-size:.78rem;color:var(--muted);
+    background:#f7f8fa;border:1px solid var(--line);border-radius:8px;padding:.6rem .8rem;margin:0 0 1.2rem}
+  .standards strong{color:var(--ink)}
+  .standards code{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;
+    background:#fff;border:1px solid var(--line);border-radius:4px;padding:.05rem .3rem}
+
+  .vignette{border-left:4px solid var(--accent);background:var(--accent-soft);
+    padding:.85rem 1rem;border-radius:0 8px 8px 0;margin:0 0 1.2rem}
+  .vignette p:last-child{margin-bottom:0}
+
+  .rulebox{border:2px solid var(--accent);border-radius:10px;padding:1rem 1.1rem;margin:1.1rem 0;background:#fff}
+  .rulebox .label{font-family:system-ui,sans-serif;font-size:.72rem;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 .5rem;font-weight:700}
+  .trap{border:2px solid var(--warn);background:var(--warn-soft);border-radius:10px;padding:1rem 1.1rem;margin:1.1rem 0}
+  .trap .label{font-family:system-ui,sans-serif;font-size:.72rem;letter-spacing:.09em;
+    text-transform:uppercase;color:#8a5c10;margin:0 0 .5rem;font-weight:700}
+
+  .math{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.95rem;
+    background:#f7f8fa;border:1px solid var(--line);border-radius:6px;padding:.7rem .85rem;
+    margin:.6rem 0;overflow-x:auto;white-space:pre;line-height:1.75}
+  .inline{font-family:ui-monospace,Menlo,monospace;font-size:.93em;
+    background:#f2f4f7;border-radius:4px;padding:.05rem .28rem;white-space:nowrap}
+
+  table{border-collapse:collapse;width:100%;margin:.7rem 0;font-size:.93rem}
+  caption{font-family:system-ui,sans-serif;font-size:.78rem;color:var(--muted);text-align:left;padding-bottom:.35rem}
+  th,td{border:1px solid var(--line);padding:.45rem .6rem;text-align:left;vertical-align:top}
+  th{background:#f7f8fa;font-family:system-ui,sans-serif;font-size:.82rem}
+  td.term{white-space:nowrap;font-weight:600}
+
+  figure{margin:1.2rem 0;text-align:center}
+  figcaption{font-family:system-ui,sans-serif;font-size:.8rem;color:var(--muted);margin-top:.5rem;text-align:left}
+  svg{max-width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
+  svg .g{stroke:#e8ebef;stroke-width:1}
+  svg .ax{stroke:#9aa3ad;stroke-width:1.5}
+  svg .tick{font:11px system-ui,sans-serif;fill:#7b8590;text-anchor:middle}
+  svg .tick.tr{text-anchor:end}
+  svg .axlbl{font:italic 13px Georgia,serif;fill:#5c6672}
+  svg .pre{fill:var(--pre)}
+  svg polygon.pre{fill:rgba(27,107,147,.13);stroke:var(--pre);stroke-width:2}
+  svg .img{fill:var(--img)}
+  svg polygon.img{fill:rgba(176,69,58,.13);stroke:var(--img);stroke-width:2;stroke-dasharray:6 3}
+  svg .ptlbl{font:600 12px system-ui,sans-serif}
+  svg .vec{stroke:var(--warn);stroke-width:1.6;stroke-dasharray:4 3}/* ---------- interactive explorer ---------- */
+  .explorer{border:2px solid var(--accent);border-radius:10px;padding:1rem;margin:1.2rem 0;background:#fcfdfe}
+  .explorer .label{font-family:system-ui,sans-serif;font-size:.72rem;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 .6rem}
+  .controls{display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end;margin:.8rem 0}
+  .ctrl{display:flex;flex-direction:column;gap:.2rem}
+  .ctrl span.cl{font-family:system-ui,sans-serif;font-size:.78rem;color:var(--muted)}
+  .stepper{display:flex;align-items:center;gap:.3rem}
+  .stepper button{
+    font:600 1rem system-ui,sans-serif;width:2rem;height:2rem;cursor:pointer;
+    border:1px solid var(--rule);background:#fff;border-radius:6px;color:var(--ink);
+  }
+  .stepper button:hover{background:var(--accent-soft);border-color:var(--accent)}
+  .stepper button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .stepper output{
+    font-family:ui-monospace,Menlo,monospace;font-size:1rem;min-width:2.6rem;
+    text-align:center;padding:.25rem 0;border:1px solid var(--line);border-radius:6px;background:#fff;
+  }
+  .live-rule{
+    font-family:ui-monospace,Menlo,monospace;font-size:1rem;background:#fff;
+    border:1px solid var(--accent);border-radius:6px;padding:.5rem .7rem;margin:.6rem 0 0;
+  }
+  .explorer table{margin-top:.7rem;font-size:.88rem}
+  .btnrow{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+  .btn{
+    font:600 .85rem system-ui,sans-serif;padding:.45rem .8rem;border-radius:6px;
+    border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;
+  }
+  .btn.ghost{background:#fff;color:var(--accent)}
+  .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .feedback{font-family:system-ui,sans-serif;font-size:.88rem;margin-top:.6rem;min-height:1.4em;font-weight:600}
+  .feedback.hit{color:var(--ok)}
+  .feedback.miss{color:var(--warn)}
+  .nojs{font-family:system-ui,sans-serif;font-size:.85rem;color:var(--muted);
+    border:1px dashed var(--rule);border-radius:8px;padding:.7rem .9rem}
+
+  details{border:1px solid var(--line);border-radius:8px;padding:.5rem .8rem;margin:.5rem 0;background:#fcfcfd}
+  details[open]{background:#fff}
+  summary{cursor:pointer;font-family:system-ui,sans-serif;font-size:.88rem;font-weight:600;color:var(--accent)}
+  details .math{margin-top:.6rem;margin-bottom:.2rem}
+
+  .given{
+    font-family:system-ui,sans-serif;font-size:.85rem;background:#eef6f1;
+    border:1px solid #cfe3d8;border-radius:6px;padding:.4rem .65rem;margin:.4rem 0;
+  }
+  .given strong{color:#2a784f}
+    .formula-parts{
+    font-family:ui-monospace,Menlo,monospace;font-size:1.05rem;text-align:center;
+    background:#fff;border:1px solid var(--line);border-radius:6px;padding:.7rem .5rem;margin:.4rem 0;
+  }
+  .pc{padding:.1rem .15rem;border-radius:3px}
+  .pc-name{background:#e6ecf5;border-bottom:2px solid #4a6fa5}
+  .pc-param{background:#fdf0e0;border-bottom:2px solid var(--warn)}
+  .pc-in{background:#e6f1ec;border-bottom:2px solid #2a784f}
+  .pc-rule{background:#f6e8e7;border-bottom:2px solid var(--img)}
+  .pc-eq{padding:0 .3rem;color:var(--muted)}
+  table.parts td:first-child{text-align:center;white-space:nowrap}/* Progressive disclosure. The reason a rule works is real content, but
+     forcing it into the reading path turns a page into a wall, and a wall is
+     an initiation barrier long before it is a comprehension one. One line of
+     reason stays visible; the derivation sits one tap away.
+     Zero JavaScript, keyboard operable, and opened automatically for print. */
+  details.why{
+    display:inline-block; margin:.15rem 0 .35rem; border:0; padding:0; background:none;
+  }
+  details.why > summary{
+    display:inline-flex; align-items:center; gap:.3rem; cursor:pointer;
+    font-size:.78rem; font-weight:600; color:var(--accent);
+    background:var(--accent-soft); border:1px solid #cfe0ea; border-radius:999px;
+    padding:.12rem .6rem .12rem .45rem; list-style:none;
+  }
+  details.why > summary::-webkit-details-marker{display:none}
+  details.why > summary::before{
+    content:"i"; font-family:Georgia,serif; font-style:italic; font-weight:700;
+    width:1rem; height:1rem; border-radius:50%; background:var(--accent); color:#fff;
+    display:inline-flex; align-items:center; justify-content:center; font-size:.7rem;
+  }
+  details.why[open] > summary{background:#fff}
+  details.why > summary:hover{background:#dceaf2}
+  details.why > summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .why-body{
+    border-left:3px solid var(--accent-soft); padding:.5rem 0 .1rem .8rem;
+    margin:.4rem 0 .2rem; font-size:.95rem;
+  }
+  .why-body p{margin:0 0 .5rem}
+  .why-body p:last-child{margin-bottom:0}
+  .why-body .math{margin:.4rem 0}
+
+  /* Created by the card renderer when a part is configured 'collapsed'.
+     Distinct from the ⓘ buttons: those hold optional depth, these hold
+     content a teacher chose to gate for their class. */
+  details.card-reveal{
+    border:1px dashed var(--rule); border-radius:8px;
+    padding:.4rem .7rem; margin:.5rem 0; background:#fcfcfa;
+  }
+  details.card-reveal > summary{
+    cursor:pointer; font-family:system-ui,sans-serif; font-size:.85rem;
+    font-weight:600; color:var(--accent); list-style:none;
+  }
+  details.card-reveal > summary::-webkit-details-marker{display:none}
+  details.card-reveal > summary::before{content:"\25b8  "; }
+  details.card-reveal[open] > summary::before{content:"\25be  "; }
+  details.card-reveal > summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  details.card-reveal[open]{background:#fff}
+  [data-card-state="hidden"]{display:none !important}
+
+  .button{
+    display:inline-block; font-family:system-ui,sans-serif; font-size:.9rem; font-weight:600;
+    background:var(--accent); color:#fff; text-decoration:none;
+    padding:.5rem .9rem; border-radius:8px; border:1px solid var(--accent);
+  }
+  .button:hover{background:#155874}
+  .button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+  .handoff{
+    border:2px solid var(--accent);border-radius:10px;padding:1rem 1.1rem;
+    margin:1rem 0;background:var(--accent-soft);
+  }
+  .handoff-h{
+    font-family:system-ui,sans-serif;font-size:.72rem;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 .4rem;
+  }
+  .handoff p{font-size:.95rem}
+  .refresh{margin:1rem 0}
+  .ref-item{
+    border:1px solid var(--line); border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0; padding:.7rem .9rem; margin-bottom:.6rem; background:#fcfdfe;
+  }
+  .ref-h{
+    font-family:system-ui,sans-serif; font-size:.85rem; font-weight:700;
+    margin:0 0 .3rem; color:var(--ink);
+  }
+  .ref-item .math{margin:.3rem 0}
+  .ref-item p:last-child{margin-bottom:0; font-size:.95rem}.sw{
+    border-left:3px solid var(--line); padding-left:.85rem; margin:.6rem 0 .8rem;
+  }
+  .sw-part{margin-bottom:.5rem}
+  .sw-part:last-child{margin-bottom:0}
+  .sw-h{
+    font-family:system-ui,sans-serif;font-size:.78rem;font-weight:700;
+    color:var(--ink);margin:0 0 .15rem;
+  }
+  .sw-part .math{margin:0;font-size:.9rem}
+  ol.checks{padding-left:1.3rem}
+  ol.checks>li{margin-bottom:1.4rem}
+  .stepnote{color:var(--muted);font-size:.88rem;font-style:italic}
+
+  footer.book{margin-top:2.5rem;padding-top:.9rem;border-top:1px solid var(--line);
+    font-family:system-ui,sans-serif;font-size:.78rem;color:var(--muted)}
+  footer.book h2{border:0;font-size:.82rem;margin:0 0 .4rem;padding:0}
+  footer.book ul{padding-left:1.1rem;margin:0}
+  footer.book li{margin-bottom:.35rem}
+  .nextup{font-family:system-ui,sans-serif;font-size:.88rem;border:1px dashed var(--rule);
+    border-radius:8px;padding:.7rem .9rem;margin-top:1.6rem}
+
+  @media print{
+    body{font-size:11pt}
+    nav.toc,.skip,.btnrow,.feedback,.nextup{display:none}
+    .explorer{border:1px solid #999}
+    details{border:0;padding:0}
+    details.why > summary{display:none}
+    details.why:not([open]) > *{display:block}
+    details>summary{display:none}
+    details:not([open])>*:not(summary){display:block}
+      }
+
+/* ---------- learner-controlled folds ----------
+   Visible by default; the learner can fold an answer away to self-test, or
+   fold the working away once it is no longer needed. Zero JavaScript. */
+details.fold{
+  border:1px solid var(--line); border-left:3px solid var(--rule);
+  border-radius:0 8px 8px 0; margin:.5rem 0; background:#fff;
+}
+details.fold > summary{
+  cursor:pointer; list-style:none;
+  font-family:system-ui,sans-serif; font-size:.72rem; letter-spacing:.09em;
+  text-transform:uppercase; font-weight:700; color:var(--muted);
+  padding:.45rem .7rem;
+}
+details.fold > summary::-webkit-details-marker{display:none}
+details.fold > summary::before{
+  content:"\25be"; display:inline-block; width:1em; color:var(--rule);
+  font-size:.9rem; vertical-align:baseline;
+}
+details.fold:not([open]) > summary::before{content:"\25b8"}
+details.fold:not([open]) > summary{color:var(--accent)}
+details.fold > summary:hover{background:#fbfbf7}
+details.fold > summary:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+details.fold > div{padding:0 .7rem .5rem}
+
+details.fold-answer{border-left-color:#8fbfa4; background:#fbfefc}
+details.fold-answer > summary{color:#2a784f}
+details.fold-answer .given{
+  margin:0; font-family:ui-monospace,Menlo,monospace; font-size:.95rem;
+  background:none; border:0; padding:0;
+}
+details.fold-work > div{padding-bottom:.2rem}
+details.fold .sw{border:0; padding-left:0; margin:0}
+
+@media print{
+  details.fold{border:0}
+  details.fold > summary{display:block; padding-left:0}
+  details.fold:not([open]) > *{display:block}
+}
+
+/* Book part headings — the reader's divisions, distinct from a lesson's phases. */
+h2.book-part{
+  font-size:1.05rem; margin:2rem 0 .3rem; padding-bottom:.3rem;
+  border-bottom:2px solid var(--accent-soft); color:var(--accent);
+  letter-spacing:.01em;
+}
+h2.book-part:first-of-type{margin-top:1rem}
+h2.book-part + p.stepnote{margin-top:.1rem; margin-bottom:.9rem}
+
+/* ---------- book navigation strip ----------
+   Secondary navigation. Deliberately smaller and lighter than the page title:
+   an oversized breadcrumb unbalances the page and competes with the heading it
+   is meant to support. */
+.booknav{
+  display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between;
+  gap:.4rem 1rem; margin:0 0 1rem; padding:0 0 .6rem;
+  border-bottom:1px solid var(--line); font-size:.82rem;
+}
+.bn-trail{display:flex; align-items:baseline; gap:.35rem; flex-wrap:wrap; min-width:0}
+.bn-trail a{color:var(--accent); text-decoration:none}
+.bn-trail a:hover{text-decoration:underline}
+.bn-trail span{color:var(--muted)}
+.bn-sep{color:var(--rule)}
+.bn-here{font-weight:600; color:var(--ink)}
+
+.bn-steps{display:flex; align-items:baseline; gap:.9rem; margin-left:auto}
+.bn-step{
+  color:var(--accent); text-decoration:none;
+  display:inline-flex; align-items:baseline; gap:.3rem;
+  padding:.25rem 0;                      /* a tap target that is not cramped */
+}
+.bn-step:hover .bn-name{text-decoration:underline}
+.bn-step:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.bn-num{font-variant-numeric:tabular-nums; font-weight:700; color:var(--muted)}
+
+/* Narrow screens: the failure mode for breadcrumbs is wrapping onto several
+   lines, which destroys scannability. Drop the section names and keep the
+   numbers, so the strip stays one line however small the screen. */
+@media (max-width:34rem){
+  .booknav{font-size:.78rem}
+  .bn-name{display:none}
+  .bn-steps{gap:1.4rem}
+  .bn-step{padding:.4rem 0}
+}
+@media print{ .booknav{display:none} }
+
+/* Mode switcher. Sits ahead of the breadcrumb because it is primary: the
+   breadcrumb tells you where you are, this tells you what you are in. */
+.bn-modes{display:flex;align-items:baseline;gap:.1rem;flex:none;margin-right:.9rem}
+.bn-modes a,.bn-modes .bn-mode-on{
+  padding:.2rem .55rem;border-radius:999px;font-size:.8rem;font-weight:600;
+  text-decoration:none;line-height:1.4;
+}
+.bn-modes a{color:var(--accent)}
+.bn-modes a:hover{background:var(--accent-soft)}
+.bn-modes a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.bn-mode-on{background:var(--accent);color:#fff}
+@media (max-width:34rem){
+  .bn-modes{margin-right:.5rem}
+  .bn-modes a,.bn-modes .bn-mode-on{padding:.25rem .45rem;font-size:.76rem}
+}

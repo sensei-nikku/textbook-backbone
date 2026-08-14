@@ -1,0 +1,612 @@
+{
+ "contractVersion": "2.0.0",
+ "toolVersion": "0.2.0",
+ "generated": "2026-07-31",
+ "schemaNotes": "Cards never encode position or membership. The textbook holds both.",
+ "cardTypes": {
+  "example": {
+   "dataFields": {
+    "required": [
+     "question",
+     "work"
+    ],
+    "optional": [
+     "notice",
+     "why"
+    ],
+    "note": "title carries ONLY the description; the engine writes \"Example N — \""
+   },
+   "wrapper": null
+  },
+  "practice": {
+   "dataFields": {
+    "required": [
+     "question",
+     "answer"
+    ],
+    "optional": [
+     "work"
+    ]
+   },
+   "wrapper": {
+    "tag": "ol",
+    "className": "checks"
+   }
+  },
+  "trap": {
+   "dataFields": {
+    "required": [
+     "body"
+    ],
+    "optional": []
+   },
+   "wrapper": null
+  },
+  "rule": {
+   "dataFields": {
+    "required": [
+     "statement"
+    ],
+    "optional": [
+     "notes",
+     "reason",
+     "why"
+    ]
+   },
+   "wrapper": null
+  },
+  "prose": {
+   "dataFields": {
+    "required": [],
+    "optional": [
+     "paragraphs",
+     "body",
+     "className",
+     "why"
+    ],
+    "note": "supply paragraphs OR body"
+   },
+   "wrapper": null
+  },
+  "vignette": {
+   "dataFields": {
+    "required": [
+     "paragraphs"
+    ],
+    "optional": [
+     "why"
+    ]
+   },
+   "wrapper": null
+  },
+  "refresher": {
+   "dataFields": {
+    "required": [],
+    "optional": [
+     "math",
+     "html",
+     "note",
+     "why"
+    ]
+   },
+   "wrapper": null
+  },
+  "table": {
+   "dataFields": {
+    "required": [
+     "caption",
+     "headers",
+     "rows"
+    ],
+    "optional": [
+     "className",
+     "firstCellClass"
+    ]
+   },
+   "wrapper": null
+  },
+  "figure": {
+   "dataFields": {
+    "required": [
+     "svg"
+    ],
+    "optional": [
+     "caption"
+    ]
+   },
+   "wrapper": null
+  },
+  "interactive": {
+   "dataFields": {
+    "required": [
+     "html"
+    ],
+    "optional": []
+   },
+   "wrapper": null
+  },
+  "handoff": {
+   "dataFields": {
+    "required": [
+     "body",
+     "href",
+     "linkLabel"
+    ],
+    "optional": []
+   },
+   "wrapper": null
+  },
+  "math": {
+   "dataFields": {
+    "required": [
+     "math"
+    ],
+    "optional": [
+     "intro",
+     "why"
+    ]
+   },
+   "wrapper": null
+  },
+  "note": {
+   "dataFields": {
+    "required": [
+     "body"
+    ],
+    "optional": [
+     "className"
+    ]
+   },
+   "wrapper": null
+  },
+  "sources": {
+   "dataFields": {
+    "required": [],
+    "optional": []
+   },
+   "wrapper": null
+  }
+ },
+ "phases": [
+  "bellringer",
+  "primer",
+  "lesson",
+  "practice",
+  "exit"
+ ],
+ "slots": {
+  "bellringer": {
+   "label": "Bellringer",
+   "hunter": "anticipatory set",
+   "purpose": "Focus attention and pull prior learning out of memory before anything new arrives.",
+   "slots": {
+    "do-now": {
+     "label": "Do Now",
+     "purpose": "A short task a learner can start alone, before instruction begins.",
+     "types": [
+      "practice",
+      "prose",
+      "math",
+      "vignette"
+     ],
+     "min": null,
+     "max": 2,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "Answerable from prior learning. If it needs today’s lesson it belongs in the lesson."
+    },
+    "context-reading": {
+     "label": "Context Reading",
+     "purpose": "A real situation the day’s tool actually solves.",
+     "types": [
+      "vignette",
+      "prose"
+     ],
+     "min": null,
+     "max": 1,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "End on a question. A vignette that resolves itself hands over the insight and leaves nothing."
+    },
+    "context-review": {
+     "label": "Context Review",
+     "purpose": "Surface what the reading was about, before naming the mathematics.",
+     "types": [
+      "prose",
+      "practice"
+     ],
+     "min": null,
+     "max": 1,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": null
+    },
+    "retrieval": {
+     "label": "Spaced Retrieval",
+     "purpose": "Recall from an EARLIER lesson, not this one.",
+     "types": [
+      "practice",
+      "flashcards"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "Ask for recall in a different format from the one it was taught in. Recapping in the same format is not retrieval."
+    }
+   }
+  },
+  "primer": {
+   "label": "Lesson Primer",
+   "hunter": "objective / purpose + input",
+   "purpose": "Say what today is for, and put the vocabulary and tools within reach.",
+   "slots": {
+    "objective": {
+     "label": "Objective",
+     "purpose": "What a learner will be able to do, observably, by the end.",
+     "types": [
+      "prose",
+      "note"
+     ],
+     "min": null,
+     "max": 1,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": null
+    },
+    "definitions": {
+     "label": "Definitions",
+     "purpose": "The words this lesson uses, defined before they are used.",
+     "types": [
+      "table",
+      "refresher",
+      "prose",
+      "trap"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "Fully populated. Never a table with blanks to fill in during the lesson. A trap belongs here when it disambiguates notation rather than diagnosing a method error — misconceptions are cheapest to correct before they are used."
+    },
+    "tools": {
+     "label": "Tools",
+     "purpose": "The rules and notation the lesson will apply.",
+     "types": [
+      "rule",
+      "refresher",
+      "math",
+      "table",
+      "trap"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "A rule needs its one-line reason. A rule with nothing underneath it has a shelf life."
+    },
+    "prerequisite-check": {
+     "label": "Prerequisite Check",
+     "purpose": "Find where a learner should start.",
+     "types": [
+      "handoff"
+     ],
+     "min": null,
+     "max": 1,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "Tests prerequisites, never the lesson’s own objective."
+    }
+   }
+  },
+  "lesson": {
+   "label": "Lesson",
+   "hunter": "input + modeling + guided practice",
+   "purpose": "Show the method worked, then work it together.",
+   "slots": {
+    "lecture": {
+     "label": "Lecture",
+     "purpose": "The explanation: where the rule comes from and why it holds.",
+     "types": [
+      "prose",
+      "math",
+      "rule",
+      "figure",
+      "table"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": null
+    },
+    "modeling": {
+     "label": "Worked Examples",
+     "purpose": "A full solution, method selection visible.",
+     "types": [
+      "example"
+     ],
+     "min": 1,
+     "max": null,
+     "hourglass": "complex-first",
+     "engineOwned": false,
+     "notes": "Full worked examples, not partial. For fragmented prior knowledge the worked-example effect outweighs completion tasks."
+    },
+    "trap": {
+     "label": "Common Trap",
+     "purpose": "A named misconception, diagnosed rather than warned against.",
+     "types": [
+      "trap"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "Correct misconceptions early. An uncorrected error gets reinforced."
+    },
+    "structured-practice": {
+     "label": "Structured Practice",
+     "purpose": "Guided attempt with the scaffold still present.",
+     "types": [
+      "practice",
+      "interactive"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": "essential-first",
+     "engineOwned": false,
+     "notes": null
+    }
+   }
+  },
+  "practice": {
+   "label": "Practice and Check for Understanding",
+   "hunter": "checking for understanding + independent practice",
+   "purpose": "Independent work, and evidence of whether it landed.",
+   "slots": {
+    "free-practice": {
+     "label": "Free Practice",
+     "purpose": "Independent items, scaffold withdrawn.",
+     "types": [
+      "practice"
+     ],
+     "min": 1,
+     "max": null,
+     "hourglass": "essential-first",
+     "engineOwned": false,
+     "notes": null
+    },
+    "error-analysis": {
+     "label": "Error Analysis",
+     "purpose": "Diagnose someone else’s wrong answer.",
+     "types": [
+      "practice"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "The one item type that only works when the answer is visible."
+    },
+    "review": {
+     "label": "Review",
+     "purpose": "Interleaved items from earlier lessons.",
+     "types": [
+      "practice",
+      "flashcards"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": null
+    },
+    "flashcards": {
+     "label": "Flashcards",
+     "purpose": "Recall of terms and rules, spaced.",
+     "types": [
+      "flashcards"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "Correct cards space out; missed cards come back sooner (Leitner)."
+    },
+    "checkpoint": {
+     "label": "Checkpoint",
+     "purpose": "A low-stakes check the learner can act on.",
+     "types": [
+      "handoff",
+      "interactive",
+      "practice"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": null
+    }
+   }
+  },
+  "exit": {
+   "label": "Exit Ticket",
+   "hunter": "closure",
+   "purpose": "Retrieval, not a summary. Generation, not recognition.",
+   "slots": {
+    "retrieval-check": {
+     "label": "Retrieval Check",
+     "purpose": "Recall today’s work from memory, notes closed.",
+     "types": [
+      "practice"
+     ],
+     "min": 1,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "“What was the main idea?” demands almost nothing. “Without looking, explain why …” demands genuine retrieval."
+    },
+    "reflection": {
+     "label": "Reflection",
+     "purpose": "What the learner noticed about their own thinking.",
+     "types": [
+      "prose",
+      "practice"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": null
+    },
+    "confidence": {
+     "label": "Confidence",
+     "purpose": "Self-rating, captured before any feedback.",
+     "types": [
+      "interactive",
+      "practice"
+     ],
+     "min": null,
+     "max": null,
+     "hourglass": null,
+     "engineOwned": false,
+     "notes": "Captured, never used to gate anything."
+    },
+    "looking-ahead": {
+     "label": "Looking Ahead",
+     "purpose": "Where this goes next.",
+     "types": [
+      "note"
+     ],
+     "min": null,
+     "max": 1,
+     "hourglass": null,
+     "engineOwned": true,
+     "notes": "Written by the engine from the textbook order. Authors do not supply it."
+    }
+   }
+  }
+ },
+ "cardFields": {
+  "required": [
+   "type",
+   "slot",
+   "data"
+  ],
+  "conditional": {
+   "title": "required for refresher, rule, example, trap, handoff"
+  },
+  "recommended": [
+   "standards",
+   "complexity",
+   "topic"
+  ],
+  "optional": {
+   "requires": "array of card ids this card cannot be read without. Validated at the TEXTBOOK layer.",
+   "scope": "library (default) | textbook-only | lesson-only. Records where a card was BORN.",
+   "extensions": "passthrough object, preserved untouched"
+  },
+  "forbidden": [
+   "ordinal",
+   "position",
+   "lessonId",
+   "order",
+   "number",
+   "chapter",
+   "unit"
+  ]
+ },
+ "complexity": {
+  "values": [
+   "essential",
+   "developing",
+   "complex"
+  ],
+  "appliesTo": [
+   "example",
+   "practice"
+  ],
+  "note": "House vocabulary. Never easy or hard, including in comments."
+ },
+ "standards": {
+  "shape": "[{code, engagement}]",
+  "engagement": [
+   "warmup",
+   "lesson",
+   "exercise",
+   "assessment"
+  ],
+  "note": "Tag honestly. Inflating everything to lesson makes coverage reports worthless."
+ },
+ "topic": {
+  "note": "A SEARCH FACET. It does not decide which chapter a card lands in — the textbook does."
+ },
+ "hourglass": {
+  "modeling": "complex-first",
+  "structured-practice": "essential-first",
+  "free-practice": "essential-first",
+  "scope": "within topic; a two-topic lesson keeps topics contiguous"
+ },
+ "crossReferences": {
+  "syntax": "{{card:some-card-id}}",
+  "resolvesTo": "the referenced card's heading",
+  "note": "Never write \"the example above\". Unresolvable ids render as a visible [missing reference: id]."
+ },
+ "idGrammar": {
+  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+  "note": "lowercase words joined by hyphens"
+ },
+ "allowedHtml": [
+  "span",
+  "strong",
+  "em",
+  "p",
+  "br",
+  "code",
+  "sup",
+  "sub",
+  "q"
+ ],
+ "fractions": {
+  "note": "Write fractional coordinates as strings, e.g. \"3/2\". No entity is required."
+ },
+ "engineOwned": [
+  "the word Example and its number",
+  "practice item numbering",
+  "next and previous",
+  "the prerequisite-check link",
+  "navigation",
+  "standards summary and coverage",
+  "fold labels and open/closed state",
+  "the four-part working layout",
+  "chapter numbering"
+ ],
+ "entities": {
+  "minus": "&minus;",
+  "vectorOpen": "&#10216;",
+  "vectorClose": "&#10217;",
+  "prime": "&#8242;",
+  "degree": "&deg;",
+  "arrow": "&rarr;",
+  "tick": "&#10003;",
+  "note": "Use these, not literal characters. A plain hyphen looks right and hashes differently."
+ },
+ "vocabulary": {
+  "banned": [
+   "easy",
+   "hard",
+   "subtract",
+   "divide",
+   "obvious",
+   "simply",
+   "clearly"
+  ],
+  "note": "Use essential/complex. Multiplicative inverse language: multiply by 1/15, never divide by 15."
+ },
+ "textbookChanges": {
+  "note": "Two shapes. Supply whichever applies; both may be absent.",
+  "topics": "[{id, title?, subtitle?, cards:[ids in order]}] — edits to the BOOK",
+  "lessons": "[{day, slug, title, sections:[{id,title,phase,cards}]}] — edits to a LESSON",
+  "semantics": "A supplied card list REPLACES that container entirely. List every card you want kept."
+ }
+}

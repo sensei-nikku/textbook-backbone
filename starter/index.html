@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!-- STARTER LANDING PAGE.
+
+     build-book.js writes chapter pages and book.html. It does NOT write this
+     file, but every page it writes links here ("Lessons" in the top nav), so
+     without it a fresh course ships with a dead link on every page.
+
+     Edit the title and the intro. Leave the #back= script alone unless you
+     know what it does: chapter pages link here as index.html#back=chapter-id,
+     and that script turns the link below into a way back to where the reader
+     came from instead of dumping them at the contents. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Course</title>
+<style>
+:root{--ink:#1a2332;--page:#fbfbf7;--muted:#5c6672;--line:#e2e5ea;
+      --accent:#1b6b93;--accent-soft:#eaf2f6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);
+     font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{max-width:44rem;margin:0 auto;padding:3rem 1.25rem 4rem}
+.eyebrow{font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;
+         color:var(--muted);margin:0 0 .4rem}
+h1{font-size:1.9rem;line-height:1.2;margin:0 0 .5rem}
+.sub{color:var(--muted);margin:0 0 2rem}
+a.card{display:block;padding:1.1rem 1.2rem;margin:0 0 .7rem;background:#fff;
+       border:1px solid var(--line);border-radius:10px;text-decoration:none;
+       color:var(--ink)}
+a.card:hover{border-color:var(--accent);background:var(--accent-soft)}
+a.card b{display:block;font-size:1.05rem}
+a.card span{display:block;color:var(--muted);font-size:.88rem;margin-top:.15rem}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);
+       color:var(--muted);font-size:.82rem}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Your Site &middot; Your Course</p>
+  <h1>Your Course</h1>
+  <p class="sub">Replace this line with one sentence about what the course is for.</p>
+
+  <a class="card" href="book.html" id="book">
+    <b>Textbook</b>
+    <span>Every chapter, start to finish.</span>
+  </a>
+
+  <p style="color:var(--muted);font-size:.88rem;margin-top:1.6rem">
+    Lesson pages are built by the lesson engine, which is not part of this
+    release. The textbook is complete on its own.
+  </p>
+
+  <footer>Your Site &middot; Your Course</footer>
+</main>
+
+<script>
+/* Chapter pages link here as index.html#back=chapter-id. Honour it. */
+(function () {
+  var m = /(?:^|#|&)back=([a-z0-9-]+)/.exec(location.hash);
+  if (!m) return;
+  var a = document.getElementById('book');
+  a.href = m[1] + '.html';
+  a.querySelector('b').textContent = 'Back to where you were';
+  a.querySelector('span').textContent = 'Or open the full contents.';
+  a.insertAdjacentHTML('afterend',
+    '<a class="card" href="book.html"><b>Textbook</b>' +
+    '<span>Every chapter, start to finish.</span></a>');
+})();
+</script>
+</body>
+</html>
