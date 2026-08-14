@@ -1,0 +1,8 @@
+# Course content never belongs in the engine repo.
+/library.js
+/textbook.js
+/*.html
+!card-editor.html
+!starter/index.html
+node_modules/
+.DS_Store
