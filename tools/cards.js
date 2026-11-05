@@ -176,6 +176,22 @@
     }).join('') + '</div>';
   }
 
+  /* Step math as an aligned grid: left side | = | right side. Lines that start
+     with "= " continue the line above. The equals signs line up in the body
+     face, and a long right side wraps inside its own column on a phone. A line
+     with no " = " spans the full width. */
+  function eqGrid(math) {
+    return '<div class="math sv-eqs">' + String(math).split('\n').map(function (ln) {
+      var t = ln.trim(), i;
+      if (t.indexOf('= ') === 0) {
+        return '<span class="l"></span><span class="e">=</span><span class="r">' + t.slice(2) + '</span>';
+      }
+      i = t.indexOf(' = ');
+      if (i < 0) { return '<span class="full">' + t + '</span>'; }
+      return '<span class="l">' + t.slice(0, i) + '</span><span class="e">=</span><span class="r">' + t.slice(i + 3) + '</span>';
+    }).join('') + '</div>';
+  }
+
   function solveBlock(w, cfg) {
     var named = cfg.workLabels === 'process';
     var steps = w.steps || [];
@@ -196,7 +212,7 @@
         var lead = st.find ? '<p class="sv-lead">' + (named ? '' : 'Find ') + raw(st.find) + '</p>' : '';
         return '<div class="sv-chunk sv-step">' +
           (named ? '<p class="sv-h">' + stepLabel(i) + (st.find ? ' &middot; ' + raw(st.find) : '') + '</p>' : lead) +
-          '<div class="math">' + raw(st.math) + '</div></div>';
+          eqGrid(st.math) + '</div>';
       }).join('') +
       (w.answer ? '<div class="sv-chunk sv-answer">' + label('Answer') +
                   '<div class="math"><strong>' + raw(w.answer) + '</strong></div></div>' : '') +

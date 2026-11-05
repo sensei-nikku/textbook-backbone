@@ -21,6 +21,9 @@ Minor: every 2.0.0 card is still valid.
   `cfg.workLabels = 'process'` prints the course step names (Goal, Facts, 5a/5b,
   Answer) for a facilitator view of the same card. `check` always renders apart
   from the working. Contract: `workShapes`.
+- **Step math is an aligned grid**: left side, =, right side. Equals signs line up
+  in the body face; a long right side wraps inside its own column on a phone
+  instead of scrolling. A line starting "= " continues the line above.
 - **`card_tool.py` checks the working's shape.** A string, a mix of the two
   shapes, or a missing part is an error. The 2.0.0 starter had a practice card
   with string working, which rendered an empty fold; it is fixed.

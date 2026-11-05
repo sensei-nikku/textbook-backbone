@@ -355,7 +355,7 @@ h2.book-part + p.stepnote{margin-top:.1rem; margin-bottom:.9rem}
 
 /* ---- solve-shape working (contract 2.1.0): chunks with space between them,
    a label (when shown) directly over its math, the check set apart ---- */
-.sv{border-left:3px solid var(--line);padding-left:.85rem;margin:.6rem 0 .4rem}
+.sv{border-left:3px solid var(--line);padding-left:.6rem;margin:.6rem 0 .4rem}
 .sv-chunk{margin:0 0 .95rem}
 .sv-chunk:last-child{margin-bottom:0}
 .sv-chunk p{margin:.1rem 0;line-height:1.7}
@@ -363,7 +363,14 @@ h2.book-part + p.stepnote{margin-top:.1rem; margin-bottom:.9rem}
 .sv-lead{font-weight:600}
 .sv-fact q{font-style:italic}
 .sv-to{color:var(--muted);padding:0 .15rem}
-.sv-m{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.95rem}
-.sv .math{margin:.15rem 0 0;font-size:.95rem;line-height:1.9}
+.sv-m{font-family:inherit}
+.sv .math{margin:.15rem 0 0;padding:.45rem .6rem;font-size:.9rem;line-height:1.9;white-space:pre-wrap}
+.sv .math.sv-eqs{display:grid;grid-template-columns:max-content max-content minmax(0,1fr);column-gap:.4rem;row-gap:.1rem;
+  font-family:inherit;font-size:1.02rem;line-height:1.75;white-space:normal;overflow-x:visible}
+.sv-eqs .l{text-align:right;white-space:nowrap}
+.sv-eqs .e{text-align:center}
+.sv-eqs .r{overflow-wrap:anywhere}
+.sv-eqs .full{grid-column:1 / -1}
 .sv-check{margin:.5rem 0 .8rem;padding:.45rem .85rem;border:1px dashed var(--line);border-radius:6px}
-.sv-check .math{margin:.1rem 0 0;line-height:1.8}
+.sv-check .math{margin:.1rem 0 0;padding:0;background:none;border:0;font-family:inherit;font-size:1rem;line-height:1.6;white-space:pre-wrap}
+.sv-answer .math{font-family:inherit;font-size:1.02rem;line-height:1.6;white-space:normal}
