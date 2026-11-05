@@ -1,7 +1,7 @@
 {
- "contractVersion": "2.0.0",
- "toolVersion": "0.2.0",
- "generated": "2026-07-31",
+ "contractVersion": "2.1.0",
+ "toolVersion": "0.3.0",
+ "generated": "2026-11-05",
  "schemaNotes": "Cards never encode position or membership. The textbook holds both.",
  "cardTypes": {
   "example": {
@@ -608,5 +608,35 @@
   "topics": "[{id, title?, subtitle?, cards:[ids in order]}] — edits to the BOOK",
   "lessons": "[{day, slug, title, sections:[{id,title,phase,cards}]}] — edits to a LESSON",
   "semantics": "A supplied card list REPLACES that container entirely. List every card you want kept."
+ },
+ "workShapes": {
+  "note": "data.work on example and practice cards takes ONE of two shapes. Never mix keys.",
+  "fourPart": {
+   "required": [
+    "givens",
+    "tools",
+    "primitives",
+    "computation"
+   ],
+   "since": "1.0.0"
+  },
+  "solve": {
+   "since": "2.1.0",
+   "required": [
+    "goal",
+    "facts",
+    "steps",
+    "answer"
+   ],
+   "optional": [
+    "check"
+   ],
+   "goal": "the unknowns, each defined with := (\"h := the rise, in inches\")",
+   "facts": "array; each entry [quote, math] (a given as written, then the math it becomes) or a plain string",
+   "steps": "array of {find?, math}: one step per unknown, in solving order; find is plain words",
+   "answer": "the result on its own line",
+   "check": "rendered apart from the working",
+   "labels": "none by default (reads as a textbook solution); render cfg.workLabels = \"process\" prints Goal, Facts, 5 or 5a/5b..., Answer"
+  }
  }
 }

@@ -86,25 +86,53 @@ limits. Run `card_tool.py types` for required and optional fields per type.
 
 ---
 
-## 4. The four-part working
+## 4. The working: two shapes
 
-An `example` card requires `data.work` with exactly four parts. This is not
-decoration; it is the pedagogy the course is built on.
+`example` cards require `data.work`; `practice` cards may have it. Since contract
+2.1.0 the working takes one of two shapes. Never mix their keys; `card_tool.py`
+rejects a mix.
+
+**Solve shape (2.1.0, recommended for new content).** It records how a person
+actually solves the problem: name the unknowns, turn each given into math, solve
+for one unknown at a time, state the answer, then check it.
+
+```json
+"work": {
+  "goal":  "<em>I</em> := the interest, in dollars.",
+  "facts": [["borrow $900", "<em>P</em> = 900"],
+            ["for 8 months", "<em>t</em> = 8 &times; 1/12 = 2/3 of a year"]],
+  "steps": [{ "find": "<em>I</em>", "math": "<em>I</em> = <em>Prt</em>\n  = 900 &times; 0.14 &times; 2/3\n  = 84" }],
+  "answer": "<em>I</em> = $84",
+  "check": "84 &times; 1/900 = 0.0933..., the same share as 0.14 &times; 2/3."
+}
+```
+
+- `goal` defines every unknown with `:=` ("is defined as"), never "let x =".
+- `facts` quotes each given as the problem wrote it, then the math statement it
+  becomes. A fact that is not a quote can be a plain string.
+- `steps` has one entry per unknown, in solving order. `find` is plain words. Put
+  one move per line in `math`, separated by `\n`.
+- `check` renders apart from the working, so it never reads as a step.
+
+By default no process labels print: the working reads as an ordinary textbook
+solution under a "Solution" fold. A renderer passing `cfg.workLabels = 'process'`
+prints the course's step names (Goal, Facts, 5 or 5a/5b..., Answer) for a
+facilitator view of the same card.
+
+**Four-part shape (1.0.0, still valid).**
 
 ```json
 "work": {
   "givens":      "What the problem hands you.",
   "tools":       "The rule or formula being invoked.",
-  "primitives":  "The reasoning that turns givens into something the tool accepts. Unit conversions, rewrites, why this tool and not another.",
+  "primitives":  "The reasoning that turns givens into something the tool accepts.",
   "computation": "The arithmetic, once everything is ready."
 }
 ```
 
-`primitives` is the part that matters and the part LLMs skip. It is where the
-thinking is. If your `primitives` says "plug in the values", you have written
-nothing and the card should be rewritten.
-
----
+In either shape the reasoning is the part that matters and the part LLMs skip:
+`facts` in the solve shape, `primitives` in the four-part shape. If it says
+"plug in the values", you have written nothing and the card should be rewritten.
 
 ## 5. Complexity, and ordering
 

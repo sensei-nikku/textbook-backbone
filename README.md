@@ -6,7 +6,7 @@ plain HTML with no runtime dependencies.
 
 This repository holds the **engine only**. No course content lives here.
 
-**Contract version 2.0.0.**
+**Contract version 2.1.0.**
 
 ---
 

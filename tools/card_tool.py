@@ -63,6 +63,32 @@ def plain(obj):
 
 
 # ---------------------------------------------------------------- validate
+FOUR_PART = ('givens', 'tools', 'primitives', 'computation')
+SOLVE_REQ = ('goal', 'facts', 'steps', 'answer')
+SOLVE_OPT = ('check',)
+
+
+def check_work(cid, w):
+    """contract 2.1.0: work is the four-part object or the solve object, never a mix."""
+    if not isinstance(w, dict):
+        return [f'{cid}: work must be an object (a string renders an empty fold)']
+    keys = set(w)
+    if keys & set(FOUR_PART) and keys & set(SOLVE_REQ + SOLVE_OPT):
+        return [f'{cid}: work mixes the four-part and solve shapes']
+    if keys & set(SOLVE_REQ + SOLVE_OPT):
+        out = [f'{cid}: solve work needs {k}' for k in SOLVE_REQ if not w.get(k)]
+        out += [f'{cid}: solve work has unknown field {k}' for k in keys - set(SOLVE_REQ + SOLVE_OPT)]
+        for i, f in enumerate(w.get('facts') or []):
+            if not (isinstance(f, str) or (isinstance(f, list) and len(f) == 2 and all(f))):
+                out.append(f'{cid}: facts[{i}] must be "text" or [quote, math]')
+        for i, st in enumerate(w.get('steps') or []):
+            if not isinstance(st, dict) or not st.get('math') or set(st) - {'find', 'math'}:
+                out.append(f'{cid}: steps[{i}] must be {{find?, math}}')
+        return out
+    return [f'{cid}: four-part work needs {k}' for k in FOUR_PART if not w.get(k)] + \
+           [f'{cid}: work has unknown field {k}' for k in keys - set(FOUR_PART)]
+
+
 def check_card(cid, c):
     out = []
     t, slot = c.get('type'), c.get('slot')
@@ -106,6 +132,10 @@ def check_card(cid, c):
             out.append(f'{cid}: standards entries need code and engagement')
         elif s['engagement'] not in ENGAGEMENT:
             out.append(f'{cid}: engagement "{s["engagement"]}" invalid ({" | ".join(ENGAGEMENT)})')
+
+    work = (c.get('data') or {}).get('work')
+    if work is not None and t in COMPLEXITY_TYPES:
+        out += check_work(cid, work)
 
     blob = json.dumps(c, ensure_ascii=False)
     txt = plain(c)

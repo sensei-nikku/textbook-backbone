@@ -71,6 +71,9 @@
                  question: 'Question', body: 'More' };
   var CLOSED_HINT = { answer: 'Answer \u2014 tap to show',
                       work: 'Suggested work \u2014 tap to show' };
+  /* A worked example's working is its solution: published texts head it
+     "Solution". Practice working stays "Suggested work" (2.1.0). */
+  var TYPE_LABELS = { example: { work: 'Solution' } };
 
   function resolve(cfg, id, type, key) {
     var byCard = (cfg.cards || {})[id] || {};
@@ -109,9 +112,10 @@
     var inner = '<div data-part="' + esc(key) + '" data-part-state="' + esc(state) + '">' + html + '</div>';
     if (state === 'shown') { return inner; }
 
+    var own = (TYPE_LABELS[this.type] || {})[key];
     var label = state === 'collapsed'
-      ? (CLOSED_HINT[key] || LABELS[key] || LABELS.body)
-      : (LABELS[key] || LABELS.body);
+      ? (own ? own + ' \u2014 tap to show' : (CLOSED_HINT[key] || LABELS[key] || LABELS.body))
+      : (own || LABELS[key] || LABELS.body);
     return '<details class="fold fold-' + esc(key) + '"' + (state === 'open' ? ' open' : '') +
            '><summary>' + esc(label) + '</summary>' + inner + '</details>';
   };
@@ -138,11 +142,30 @@
     return ctor;
   }
 
-  /* ---------- shared formatter: the four-part working ----------
+  /* ---------- shared formatter: the working ----------
      Used by BOTH ExampleCard and PracticeCard. This is the single reason
-     the taught form and the assessed form cannot diverge. */
-  function workBlock(work) {
+     the taught form and the assessed form cannot diverge.
+
+     Two shapes (contract 2.1.0):
+
+     four-part  {givens, tools, primitives, computation}      (2.0.0, unchanged)
+
+     solve      {goal, facts, steps, answer, check?}           (2.1.0)
+       goal     the unknowns, each defined with := ("h := the rise, in inches")
+       facts    [[quote, math], ...]: a given quoted as written, then the math
+                statement it becomes. A plain string is a fact with no quote.
+       steps    [{find?, math}, ...]: one step per unknown, in solving order.
+                `find` is plain words ("the slope of the new line").
+       answer   the result, on its own line
+       check    shown apart from the working, so a check never reads as a step
+
+     A solve working prints NO process labels by default: it reads as an
+     ordinary textbook solution. cfg.workLabels === 'process' prints the
+     course's step names (Goal, Facts, 5 or 5a/5b..., Answer) for a facilitator
+     view of the same card. "Check" is always labelled. */
+  function workBlock(work, cfg) {
     if (!work) { return ''; }
+    if (work.goal || work.steps || work.facts) { return solveBlock(work, cfg || {}); }
     var order = ['givens', 'tools', 'primitives', 'computation'];
     var head = { givens: 'Givens', tools: 'Tools',
                  primitives: 'Primitives', computation: 'Computation' };
@@ -151,6 +174,37 @@
       return '<div class="sw-part"><p class="sw-h">' + head[k] + '</p>' +
              '<div class="math">' + raw(work[k]) + '</div></div>';
     }).join('') + '</div>';
+  }
+
+  function solveBlock(w, cfg) {
+    var named = cfg.workLabels === 'process';
+    var steps = w.steps || [];
+    function label(t) { return named ? '<p class="sv-h">' + esc(t) + '</p>' : ''; }
+    function stepLabel(i) {
+      if (steps.length === 1) { return '5'; }
+      return '5' + String.fromCharCode(97 + i);
+    }
+    var facts = (w.facts || []).map(function (f) {
+      if (typeof f === 'string') { return '<p class="sv-fact">' + raw(f) + '</p>'; }
+      return '<p class="sv-fact"><q>' + raw(f[0]) + '</q> <span class="sv-to">&rarr;</span> ' +
+             '<span class="sv-m">' + raw(f[1]) + '</span></p>';
+    }).join('');
+    var out = '<div class="sv">' +
+      (w.goal ? '<div class="sv-chunk sv-goal">' + label('Goal') + '<p>' + raw(w.goal) + '</p></div>' : '') +
+      (facts ? '<div class="sv-chunk sv-facts">' + label('Facts') + facts + '</div>' : '') +
+      steps.map(function (st, i) {
+        var lead = st.find ? '<p class="sv-lead">' + (named ? '' : 'Find ') + raw(st.find) + '</p>' : '';
+        return '<div class="sv-chunk sv-step">' +
+          (named ? '<p class="sv-h">' + stepLabel(i) + (st.find ? ' &middot; ' + raw(st.find) : '') + '</p>' : lead) +
+          '<div class="math">' + raw(st.math) + '</div></div>';
+      }).join('') +
+      (w.answer ? '<div class="sv-chunk sv-answer">' + label('Answer') +
+                  '<div class="math"><strong>' + raw(w.answer) + '</strong></div></div>' : '') +
+      '</div>';
+    if (w.check) {
+      out += '<div class="sv-check"><p class="sv-h">Check</p><div class="math">' + raw(w.check) + '</div></div>';
+    }
+    return out;
   }
 
   /* ---------- card types ---------- */
@@ -171,7 +225,7 @@
     var d = this.data;
     return this.heading() +
       this.part('question', '<p>' + raw(d.question) + '</p>', cfg) +
-      this.part('work', workBlock(d.work), cfg) +
+      this.part('work', workBlock(d.work, cfg), cfg) +
       (d.notice ? '<p><strong>Notice:</strong> ' + raw(d.notice) + '</p>' : '') +
       this.why();
   };
@@ -182,7 +236,7 @@
     var d = this.data;
     return this.part('question', '<p>' + raw(d.question) + '</p>', cfg) +
       this.part('answer', '<p class="given">' + raw(d.answer) + '</p>', cfg) +
-      this.part('work', workBlock(d.work), cfg);
+      this.part('work', workBlock(d.work, cfg), cfg);
   };
 
   var TrapCard = extend(function (s) { Card.call(this, s); this.type = 'trap'; });
@@ -215,6 +269,8 @@
   /* ---------- shared: an optional ⓘ depth disclosure on any card ---------- */
   function whyBlock(why) {
     if (!why) { return ''; }
+    /* A plain string was rendered as an empty fold before 2.1.0. */
+    if (typeof why === 'string') { why = { label: 'Why this matters', body: why }; }
     return '<details class="why"><summary>' + esc(why.label) + '</summary>' +
            '<div class="why-body">' + raw(why.body) + '</div></details>';
   }

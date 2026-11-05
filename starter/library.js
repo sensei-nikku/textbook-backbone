@@ -31,10 +31,7 @@ window.LIBRARY = {
   "standards": [{ "code": "FM.1", "engagement": "lesson" }],
   "data": {
    "statement": "<em>I</em> = <em>Prt</em>, where <em>P</em> is the amount borrowed, <em>r</em> is the yearly rate written as a decimal, and <em>t</em> is the time in years.",
-   "notes": [
-    "<em>r</em> is a rate per year, so <em>t</em> is measured in years. Six months is <em>t</em> = 1/2.",
-    "<em>I</em> is the interest alone. What you hand over is <em>P</em> + <em>I</em>."
-   ],
+   "notes": "<em>r</em> is a rate per year, so <em>t</em> is measured in years. Six months is <em>t</em> = 1/2.<br><em>I</em> is the interest alone. What you hand over is <em>P</em> + <em>I</em>.",
    "reason": "Interest is a fraction of the amount borrowed, charged again for each year you hold it. Multiplying by <em>r</em> takes the fraction; multiplying by <em>t</em> charges it for each year."
   }
  },
@@ -49,10 +46,17 @@ window.LIBRARY = {
   "data": {
    "question": "You borrow $900 at 14% for 8 months. What is the interest?",
    "work": {
-    "givens": "<em>P</em> = 900, rate = 14% per year, time = 8 months.",
-    "tools": "<em>I</em> = <em>Prt</em>.",
-    "primitives": "14% means 14 per hundred, so <em>r</em> = 0.14. The rate is per year and the time is in months, so the time must be rewritten in years: 8 months is 8 twelfths of a year, or <em>t</em> = 8 &times; 1/12.",
-    "computation": "<em>I</em> = 900 &times; 0.14 &times; 8/12 = 900 &times; 0.14 &times; 2/3 = $84."
+    "goal": "<em>I</em> := the interest, in dollars.",
+    "facts": [
+     ["borrow $900", "<em>P</em> = 900"],
+     ["at 14%", "<em>r</em> = 14 &times; 1/100 = 0.14 per year"],
+     ["for 8 months", "<em>t</em> = 8 &times; 1/12 = 2/3 of a year"]
+    ],
+    "steps": [
+     { "find": "<em>I</em>", "math": "<em>I</em> = <em>Prt</em>\n  = 900 &times; 0.14 &times; 2/3\n  = 84" }
+    ],
+    "answer": "<em>I</em> = $84",
+    "check": "84 &times; 1/900 = 0.0933..., and 0.14 &times; 2/3 = 0.0933...: the interest is the right share of the loan."
    },
    "notice": "The units are the whole problem. A rate per year multiplied by a time in months returns a number that means nothing."
   }
@@ -67,7 +71,12 @@ window.LIBRARY = {
   "data": {
    "question": "You borrow $500 at 6% for 1 year. What is the interest?",
    "answer": "$30.",
-   "work": "<em>r</em> = 0.06 and <em>t</em> = 1, so <em>I</em> = 500 &times; 0.06 &times; 1 = 30."
+   "work": {
+    "goal": "<em>I</em> := the interest, in dollars.",
+    "facts": [["borrow $500", "<em>P</em> = 500"], ["at 6%", "<em>r</em> = 0.06"], ["for 1 year", "<em>t</em> = 1"]],
+    "steps": [{ "find": "<em>I</em>", "math": "<em>I</em> = 500 &times; 0.06 &times; 1\n  = 30" }],
+    "answer": "<em>I</em> = $30"
+   }
   }
  }
 

@@ -12,6 +12,29 @@ changes are patch. Refuse a major mismatch, warn on minor.
 
 ---
 
+## 2.1.0 — 2026-11-05
+
+Minor: every 2.0.0 card is still valid.
+
+- **Solve-shape working.** `data.work` may be `{goal, facts, steps, answer, check?}`
+  instead of the four-part object. It prints as a plain textbook solution;
+  `cfg.workLabels = 'process'` prints the course step names (Goal, Facts, 5a/5b,
+  Answer) for a facilitator view of the same card. `check` always renders apart
+  from the working. Contract: `workShapes`.
+- **`card_tool.py` checks the working's shape.** A string, a mix of the two
+  shapes, or a missing part is an error. The 2.0.0 starter had a practice card
+  with string working, which rendered an empty fold; it is fixed.
+- **Example working is headed "Solution"**, as in published texts. Practice
+  working keeps "Suggested work".
+- **Fix:** a `why` written as a plain string rendered an empty fold. It now
+  renders under "Why this matters". The starter's rule `notes` array (rendered
+  comma-joined) is now one string.
+
+Requested by Nick for the Geometry book (Nov 5, 2026). Financial Math stays
+pinned at 2.0.0 until it chooses to upgrade.
+
+---
+
 ## 2.0.0 — 2026-07-31
 
 First release with an authored textbook.
