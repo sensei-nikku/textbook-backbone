@@ -374,3 +374,10 @@ h2.book-part + p.stepnote{margin-top:.1rem; margin-bottom:.9rem}
 .sv-check{margin:.5rem 0 .8rem;padding:.45rem .85rem;border:1px dashed var(--line);border-radius:6px}
 .sv-check .math{margin:.1rem 0 0;padding:0;background:none;border:0;font-family:inherit;font-size:1rem;line-height:1.6;white-space:pre-wrap}
 .sv-answer .math{font-family:inherit;font-size:1.02rem;line-height:1.6;white-space:normal}
+/* phones: the working is nested five boxes deep; give its math the width back */
+@media (max-width:420px){
+  details.fold{padding-left:.55rem;padding-right:.55rem}
+  details.fold > [data-part]{padding-left:.15rem;padding-right:.15rem}
+  .sv{padding-left:.45rem}
+  .sv .math{padding:.4rem .45rem}
+}
